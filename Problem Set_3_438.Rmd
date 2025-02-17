@@ -1,0 +1,97 @@
+---
+title: "Problem Set 3"
+author: "Debjit Khaskel(438)"
+date: ""
+output: word_document
+---
+1. Read the CSV file “FrenchFoodData.csv” in R and do the following:
+  a) Find the Var-Cov matrix and the correlation matrix and comment.
+  b) Compute SVD
+  c) Apply factorial techniques to the data and plot it in two dimensions.
+  d) What percentage of inertia is explained by the first two factors?
+  e) Report your findings.
+  
+```{r}
+library(readxl)
+data = read_excel("C:\\Users\\DS-3\\Downloads\\Problem set 3_French Food Data (3).xlsx");data
+data
+matrix_data= data[,-1];matrix_data
+matrix_data=scale(matrix_data)
+x=as.matrix(matrix_data)
+x
+
+main=x%*%t(x);main
+print("The Variance-Covariance Matrix:")
+var_cov_matrix = cov(main);var_cov_matrix
+
+print("The Correlation matrix")
+correlation_matrix = cor(main);correlation_matrix
+
+# COMMENT : The variance-covariance matrix shows how much two variables vary together while the correlation matrix tells us how strongly the variables are linearly related,with values between -1 and 1.
+#           If the values in the correlation matrix are close to 1 or -1, it indicates a strong relationship between the variables.
+```
+
+
+
+```{r}
+eigen=eigen(main);eigen
+
+print("The eigen values of the variance covariance matrix: ")
+eigen_val=eigen$values;eigen_val
+
+print("The eigen vectors of the variance covariance matrix: ")
+eigen_vec=eigen$vectors;eigen_vec
+
+print("numeric matrix: ")
+numeric_matrix=(as.matrix(main));numeric_matrix
+
+print("eigen vectors related to max eigen value: ")
+eigen_vec_max= eigen_vec[,1:2];eigen_vec_max
+
+print("projection of data: ")
+project_data =as.data.frame( numeric_matrix %*% eigen_vec_max );project_data
+
+plot(project_data$V1,project_data$V2,col="blue",main="Expenditure of food items by family",xlab = "v2",ylab='v1' )
+abline(h=0)
+abline(v=0)
+
+text(project_data$V1,project_data$V2,labels = data$...1,pos = 4,cex = 0.7,col = "red")
+
+```
+
+```{r}
+library(readxl)
+data = read_excel("C:\\Users\\DS-3\\Downloads\\Problem set 3_French Food Data.xlsx");data
+matrix_data= (scale(data[,-1]));matrix_data
+x=as.matrix(matrix_data)
+main=x%*%t(x);main
+print("The Variance-Covariance Matrix:")
+var_cov_matrix = cov(main);var_cov_matrix
+
+print("The Correlation matrix")
+correlation_matrix = cor(main);correlation_matrix
+
+eigen=eigen(main);eigen
+
+eigen_val=eigen$values;eigen_val
+
+eigen_vec=eigen$vectors;eigen_vec
+
+numeric_matrix=as.matrix(main);numeric_matrix
+
+eigen_vec_max= eigen_vec[,1:2];eigen_vec_max
+
+
+
+z1=t(x)%*%eigen_vec[,1];z1
+
+z2=t(x)%*%eigen_vec[,2];z2
+
+plot(z1,z2,col="blue",main = "Representation of family expendeture based on food ")
+
+abline(h=0)
+abline(v=0)
+
+text(z1,z2,label=c("bread","vegetables","fruits","meat","poultry","milk","wine"))
+```
+
