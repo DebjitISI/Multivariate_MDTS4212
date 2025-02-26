@@ -42,6 +42,7 @@ pca_1 = prcomp(data);pca_1
 summary(pca_1)
 readings_1 = pca_1$rotation
 std_dev_1 = pca_1$sdev
+sqrt(e$values/std_dev_1)
 corr_mat_pca_1= readings_1%*%diag(sqrt(e$values/std_dev_1));corr_mat_pca_1
 
 #scaled data
@@ -59,9 +60,11 @@ e_scaled$values[3]/sum(e_scaled$values)
 summary(pca_2)
 readings = pca_2$rotation
 std_dev = pca_2$sdev
+
 corr_mat_pca_2= readings%*%diag(sqrt(e_scaled$values/std_dev));corr_mat_pca_2
 
 par(mfrow=c(2,2))
+#SCALED DATA
 y_scaled = as.matrix(scaled_data)%*%e_scaled$vectors
 y_scaled
 tb=data.frame(y[,1],y[,2])
@@ -74,6 +77,7 @@ lines(x1,y1)
 text(corr_mat_pca_2,labels=rownames(corr_mat_pca_2),pos=4,cex=0.7,col='red')
 plot(y_scaled,col=ifelse(Status==1,'red','blue'),main="Standardised Clustering based on Fake(Red) and Real(blue) Note")
 
+#UNSCALED DATA
 y = as.matrix(data)%*%e$vectors
 y
 tb=data.frame(y[,1],y[,2])
@@ -85,5 +89,4 @@ plot(corr_mat_pca_1,ylim = c(1,-1),xlim = c(1,-1),main="Non_Standardised importa
 lines(x1,y1)
 text(corr_mat_pca_1,labels=rownames(corr_mat_pca_1),pos=4,cex=0.7,col='red')
 plot(y,col=ifelse(Status==1,'red','blue'),main="Non-Standardised Clustering based on Fake(Red) and Real(blue) Note")
-library(ggplot2)
-ggplot(y)
+
