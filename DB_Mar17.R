@@ -1,6 +1,5 @@
 library(readxl)
 data = read_xlsx('/home/datascience/Downloads/otter-mandible-data (1).xlsx')
-#data = read_xlsx('C:/Users/DEBJIT/Downloads/otter-mandible-data (1).xlsx')
 set.seed(1)
 ?sample
 train = sample(1:nrow(data),size = round(0.8*nrow(data)))
@@ -8,8 +7,9 @@ train_sample= data[train,]
 test_sample  = data[-train,]
 attach(data)
 library(klaR)
-library(tidyverse)
+#library(tidyverse)
 library(MASS)
+library(partykit)
 lda_otter = lda(species~.,train_sample)
 pred = predict(lda_otter,test_sample)
 startsWith(train_sample$species,'A')
@@ -21,13 +21,13 @@ table(pred$class,test_sample$species)
 test_sample$spe
 ?plot
 
-#partimat(species ~ ., data=train_sample, method="lda")
-#?partimat
-#unique(train_sample$species)
-lda.data = data.frame(pred$x, species = test_sample$species)
-library(ggplot2)
+partimat(as.factor(species) ~ ., data=test_sample, method="lda")
+?partimat
+unique(train_sample$species)
+cov(data[,-1])
+cov(data[startsWith(data$species,'A'),-1])
+cov(data[startsWith(data$species,'E'),-1])
+cov(data[startsWith(data$species,'L'),-1])
+cov(data[startsWith(data$species,'P'),-1])
 
-ggplot(lda.data, aes(x = LD1, y = LD2, color = species)) +
-  geom_point(size = 3) + labs(title = "LDA Plot", x = "LD1", y = "LD2") +
-  theme_minimal() +
-  scale_color_manual(values = c("red", "blue","green","orange"))
+
