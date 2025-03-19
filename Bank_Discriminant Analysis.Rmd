@@ -1,0 +1,65 @@
+---
+title: "Bank_Discriminant Analysis"
+author: "Debjit Khaskel(Roll No.- 438)"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r}
+data(data = 'bank',package = 'gclus')
+attach(bank)
+library(klaR)
+#library(tidyverse)
+library(MASS)
+```
+
+## Splitting the data
+
+```{r}
+train = sample(1:nrow(data),size = round(0.8*nrow(data)))
+train_sample= bank[train,]
+test_sample  = bank[-train,]
+```
+
+## Performing LDA
+
+```{r}
+lda_bank = lda(as.factor(Status)~.,data = train_sample)
+lda_bank
+```
+
+## Calculating Cov Matrices
+
+```{r}
+cov(bank[Status==0,-1])
+```
+
+```{r}
+cov(bank[Status==1,-1])
+```
+
+As the Cov matrices are similar we apply LDA on it
+
+## Checking for mis-classification
+
+```{r}
+pred_test = predict(lda_bank,test_sample)
+table(pred_test$class,test_sample$Status,dnn = c('Pred','Test'))
+```
+
+```{r}
+pred_train = predict(lda_bank,train_sample)
+table(pred_train$class,train_sample$Status,dnn = c('Pred','Test'))
+```
+
+## Projection of the data onto LD1 with a histogram of that data
+
+```{r}
+plot(lda_bank, dimen = 1, type = "b")
+```
+
+## LDA Partition Plots
+
+```{r}
+partimat(as.factor(Status) ~ ., data=train_sample, method="lda")
+```
